@@ -1,7 +1,7 @@
 body {
       font-family: sans-serif;
       margin: 20px;
-      background-color: #f4f4f4;
+      background-color: #181818;
       color: #333;
     }
 
@@ -21,6 +21,7 @@ body {
       display: flex;
       flex-direction: column;
       margin-bottom: 15px;
+      
     }
 
     .form-group label {
@@ -134,4 +135,19 @@ body {
 
     .radio-group input[type="radio"] {
       margin: 0;
+    }
+
+    .brand {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .width-45 {
+      width: 100%;
+    }
+    .text-center {
+      text-align: center;
     }

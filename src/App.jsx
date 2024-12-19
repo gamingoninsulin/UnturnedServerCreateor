@@ -1,5 +1,4 @@
-
-    import React, { useState } from 'react';
+import React, { useState } from 'react';
     import styled from 'styled-components';
 
     const CommandForm = styled.form`
@@ -61,9 +60,8 @@
       const [config, setConfig] = useState('');
       const [showCommandsModal, setShowCommandsModal] = useState(false);
 
-      const handleCommandsChange = (e) => {
-        setCommands(e.target.value);
-      };
+      const [showConfigModal, setShowConfigModal] = useState(false);
+      const [selectedConfig, setSelectedConfig] = useState(null); // Store selected file
 
       const handleConfigChange = (e) => {
         setConfig(e.target.value);
@@ -103,7 +101,7 @@
         for (const element of e.target.elements) {
           if (element.name && element.value) {
             if (element.type === 'radio' && element.checked) {
-              generatedCommands += `${element.name} ${element.value}\n`;
+              generatedCommands += `${element.value}\n`;
             } else if (element.type !== 'radio') {
               generatedCommands += `${element.name} ${element.value}\n`;
             }
@@ -112,28 +110,59 @@
         setCommands(generatedCommands);
         setShowCommandsModal(false);
       };
+      
+      const handleOpenConfigModal = () => {
+        setShowConfigModal(true);
+      };
+    
+      const handleCloseConfigModal = () => {
+        setShowConfigModal(false);
+        setSelectedConfig(null); // Clear selected file on close
+      };
+    
+      const handleConfigFileUpload = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            try {
+              const json = JSON.parse(e.target.result);
+              setConfig(JSON.stringify(json, null, 2)); // Format JSON nicely
+              setSelectedConfig(file); // Store the selected file
+            } catch (error) {
+              alert("Invalid JSON file.");
+            }
+          };
+          reader.readAsText(file);
+        }
+      };
 
       return (
         <div className="container">
-          <h1>Unturned Server Creator</h1>
+          <span className="brand">
+            <img src="./src/images/Unturned.png" alt="Unturned" width="65" height="auto"/>
+            <h1>Unturned Server Creator</h1>
+          </span>
           <button onClick={handleOpenCommandsModal}>Open Commands.dat Editor</button>
           <div className="form-group">
             <label>Config.json Content:</label>
+            <button onClick={handleOpenConfigModal}>Upload Config.json</button>
             <textarea
               rows="10"
               value={config}
               onChange={handleConfigChange}
-              placeholder="Enter config here..."
+              placeholder={config}
             />
           </div>
-          <button onClick={handleDownloadConfig}>Download Config.json</button>
-          <h2>Preview</h2>
+          <h2 className="text-center">Output</h2>
           <div>
-            <h3>Commands.dat Preview:</h3>
+            <h3 className="text-center">Commands Output:</h3>
+            <button className="width-45" onClick={handleDownloadCommands}>Download</button>
             <pre>{commands}</pre>
           </div>
           <div>
-            <h3>Config.json Preview:</h3>
+            <h3 className="text-center">Config Output:</h3>
+            <button className="width-45" onClick={handleDownloadConfig}>Download</button>
             <pre>{config}</pre>
           </div>
 
@@ -522,6 +551,16 @@
               </div>
             </div>
           )}
+          {showConfigModal && (
+          <div className="modal">
+            <div className="modal-content">
+              <h2>Upload Config.json</h2>
+              <input type="file" accept=".json" onChange={handleConfigFileUpload} />
+              {selectedConfig && <p>Selected file: {selectedConfig.name}</p>}
+              <button className="close-button" onClick={handleCloseConfigModal}>Close</button>
+            </div>
+          </div>
+        )}
         </div>
       );
     }
