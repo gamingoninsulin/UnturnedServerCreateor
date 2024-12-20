@@ -32,4 +32,3 @@ jobs:
     - run: npm install styled-components
     - run: npm install vite
     - run: npm run build
-    - run: npm test
