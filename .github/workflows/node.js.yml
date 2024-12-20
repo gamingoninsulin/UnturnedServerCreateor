@@ -31,4 +31,4 @@ jobs:
     - run: npm install react-dom
     - run: npm install styled-components
     - run: npm install vite
-    - run: npm run build
+    - run: npm run build -- --port 3000
